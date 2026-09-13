@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semillero — Buscador de jugadores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  header{padding:28px 0 22px;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:baseline;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:22px;}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .tag{color:var(--muted);font-size:13px;}
+  .hero{padding:44px 0 28px;}
+  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:34px;line-height:1.15;margin:0 0 10px;max-width:24ch;}
+  .hero p{color:var(--muted);font-size:15px;max-width:56ch;margin:0;}
+  form{margin:0;}
+  .searchbar{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;padding:4px 4px 4px 18px;}
+  .searchbar input{flex:1;border:none;outline:none;font-size:16px;padding:14px 8px;font-family:'Public Sans',sans-serif;background:transparent;color:var(--ink);}
+  .searchbar button{background:var(--maroon);color:#fff;border:none;border-radius:7px;padding:12px 20px;font-size:14px;cursor:pointer;font-family:'Public Sans',sans-serif;}
+  .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px;}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
+  .field select{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'Public Sans',sans-serif;color:var(--ink);}
+  .range-pair{display:flex;gap:8px;}
+  .range-pair input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 10px;font-size:14px;font-family:'Public Sans',sans-serif;color:var(--ink);}
+  .results-bar{display:flex;justify-content:space-between;align-items:center;margin:32px 0 16px;}
+  .results-bar .count{font-size:14px;color:var(--muted);}
+  .results-bar a{background:none;border:1px solid var(--line);border-radius:8px;color:var(--ink);font-size:13px;padding:8px 14px;cursor:pointer;text-decoration:none;}
+  .results-bar a:hover{border-color:var(--maroon);color:var(--maroon);}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-bottom:60px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;gap:14px;}
+  .avatar{width:52px;height:52px;border-radius:50%;background:var(--maroon-50);color:var(--maroon);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:17px;flex-shrink:0;}
+  .card-body{min-width:0;}
+  .card-body .name{font-weight:600;font-size:15px;margin-bottom:2px;}
+  .card-body .team{color:var(--muted);font-size:12.5px;margin-bottom:10px;}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;}
+  .badge{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--grass-50);color:var(--grass);}
+  .badge.alt{background:var(--maroon-50);color:var(--maroon);}
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14.5px;border:1px dashed var(--line);border-radius:12px;grid-column:1/-1;}
+  footer{padding:24px 0 50px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);}
+  @media(max-width:820px){.filters{grid-template-columns:repeat(2,1fr);} .grid{grid-template-columns:1fr;} .equipos-liga-grid{grid-template-columns:repeat(2,1fr) !important;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" style="text-decoration:none;color:inherit;"><div class="brand">Semillero <em>/ beta</em></div></a>
+    <div class="tag">Conectado a la base de datos real (Django)</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Encuentra a cada jugador del béisbol menor venezolano</h1>
+    <p>Filtra por liga, categoría, equipo, año de nacimiento o nombre para ver el perfil de desarrollo de cada pelotero.</p>
+
+    <form method="get">
+      <div class="searchbar">
+        <input type="text" name="q" value="{{ filtros.q }}" placeholder="Buscar por nombre del jugador…">
+        <button type="submit">Buscar</button>
+      </div>
+
+      <div class="filters">
+        <div class="field">
+          <label for="f-liga">Liga</label>
+          <select id="f-liga" name="liga" onchange="this.form.submit()">
+            <option value="">Todas las ligas</option>
+            {% for l in ligas %}
+              <option value="{{ l.id }}" {% if filtros.liga == l.id|stringformat:"s" %}selected{% endif %}>{{ l.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-categoria">Categoría</label>
+          <select id="f-categoria" name="categoria" onchange="this.form.submit()">
+            <option value="">Todas las categorías</option>
+            {% for c in categorias %}
+              <option value="{{ c.id }}" {% if filtros.categoria == c.id|stringformat:"s" %}selected{% endif %}>{{ c.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-club">Equipo</label>
+          <select id="f-club" name="club" onchange="this.form.submit()">
+            <option value="">Todos los equipos</option>
+            {% for cl in clubes %}
+              <option value="{{ cl.id }}" {% if filtros.club == cl.id|stringformat:"s" %}selected{% endif %}>{{ cl.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label>Año de nacimiento</label>
+          <div class="range-pair">
+            <input type="number" name="anio_min" value="{{ filtros.anio_min }}" placeholder="Desde">
+            <input type="number" name="anio_max" value="{{ filtros.anio_max }}" placeholder="Hasta">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% if hay_busqueda %}
+<section class="wrap">
+  <div class="results-bar">
+    <div class="count">{{ total_resultados }} jugador{{ total_resultados|pluralize:"es" }} encontrado{{ total_resultados|pluralize:"s" }}</div>
+    <a href="{% url 'buscador_jugadores' %}">Limpiar filtros</a>
+  </div>
+  <div class="grid">
+    {% for j in jugadores %}
+      <a href="{% url 'ficha_jugador' j.id %}" class="card" style="text-decoration:none;color:inherit;">
+        <div class="avatar">{{ j.nombre|slice:":1" }}{{ j.nombre|cut:" "|slice:"1:2" }}</div>
+        <div class="card-body">
+          <div class="name">{{ j.nombre }}</div>
+          <div class="team">{{ j.equipo }} · {{ j.anio_nacimiento }}</div>
+          <div class="badges">
+            <span class="badge">{{ j.equipo.campeonato.categoria.nombre }}</span>
+            {% if j.posicion_campo %}<span class="badge alt">{{ j.get_posicion_campo_display }}</span>{% endif %}
+          </div>
+        </div>
+      </a>
+    {% empty %}
+      <div class="empty">No se encontraron jugadores con estos filtros. Prueba ampliando el rango de años o quitando algún filtro.</div>
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<section class="wrap">
+  <h2 style="font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 4px;">Explora por categoría</h2>
+  <p style="color:var(--muted);font-size:13.5px;margin:0 0 18px;">O usa la barra de arriba si ya sabes el nombre del jugador que buscas.</p>
+  <div class="grid">
+    {% for c in categorias_browse %}
+      <a href="{% url 'categoria_detalle' c.id %}" style="background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;text-decoration:none;color:var(--ink);">
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin-bottom:10px;">{{ c.nombre }}</div>
+        <div style="display:flex;gap:14px;">
+          <div style="font-size:12.5px;color:var(--muted);"><b style="color:var(--maroon);font-family:'Fraunces',serif;font-size:15px;display:block;">{{ c.total_equipos }}</b>Equipo{{ c.total_equipos|pluralize }}</div>
+          <div style="font-size:12.5px;color:var(--muted);"><b style="color:var(--maroon);font-family:'Fraunces',serif;font-size:15px;display:block;">{{ c.total_jugadores }}</b>Jugador{{ c.total_jugadores|pluralize:"es" }}</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<footer>
+  <div class="wrap">
+    Estos resultados vienen directamente de la base de datos del proyecto Django — no son datos fijos como en el mockup anterior. Ve al panel /admin/ para agregar ligas, campeonatos, clubes y jugadores.
+  </div>
+</footer>
+
+</body>
+</html>

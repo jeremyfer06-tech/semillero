@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de {{ club.nombre }} — Semillero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 28px;}
+  header{padding:24px 0;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .logout{color:var(--muted);font-size:13px;text-decoration:none;}
+  .logout:hover{color:var(--maroon);}
+
+  .hero{padding:36px 0 24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;}
+  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;margin:0 0 4px;}
+  .hero p{color:var(--muted);font-size:13.5px;margin:0;}
+  .actions{display:flex;gap:10px;}
+  .btn{background:var(--maroon);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-size:13.5px;font-weight:600;}
+  .btn.alt{background:var(--panel);color:var(--ink);border:1px solid var(--line);}
+
+  .msg{background:var(--grass-50);color:var(--grass);padding:12px 16px;border-radius:8px;font-size:13.5px;margin-bottom:20px;}
+  .msg.error{background:var(--maroon-50);color:var(--maroon);}
+
+  .equipo-block{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:14px;}
+  .equipo-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .equipo-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:17px;margin:0;}
+  .equipo-head .cat{color:var(--muted);font-size:12.5px;}
+  .equipo-head a{color:var(--maroon);font-size:12.5px;text-decoration:none;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;padding:0 8px 8px;border-bottom:1px solid var(--line);}
+  tbody td{padding:10px 8px;border-bottom:1px solid var(--line);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody a{color:var(--ink);text-decoration:none;}
+  tbody a:hover{color:var(--maroon);}
+  .empty-note{color:var(--muted);font-size:13px;padding:8px 0;}
+
+  footer{padding:32px 0 50px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="{% url 'buscador_jugadores' %}" class="logout">Ver jugadores</a>
+      <a href="{% url 'panel_logout' %}" class="logout">Cerrar sesión</a>
+    </div>
+  </div>
+</header>
+
+<section class="wrap">
+  {% if messages %}
+    {% for m in messages %}<div class="msg {% if m.tags %}{{ m.tags }}{% endif %}">{{ m }}</div>{% endfor %}
+  {% endif %}
+
+  <div class="hero">
+    <div>
+      <h1>{{ club.nombre }}</h1>
+      <p>Gestiona tus equipos por categoría y los jugadores de cada roster.</p>
+    </div>
+    <div class="actions">
+      <a href="{% url 'panel_equipo_nuevo' %}" class="btn alt">+ Nuevo equipo</a>
+      <a href="{% url 'panel_jugador_nuevo' %}" class="btn">+ Nuevo jugador</a>
+    </div>
+  </div>
+
+  {% if equipos %}
+    {% for e in equipos %}
+      <div class="equipo-block">
+        <div class="equipo-head">
+          <div>
+            <h2>{{ e }}</h2>
+            <span class="cat">{{ e.campeonato.categoria.nombre }} · {{ e.campeonato.temporada }}</span>
+          </div>
+          <a href="{% url 'panel_equipo_editar' e.id %}">Editar equipo</a>
+        </div>
+        {% if e.jugadores.all %}
+        <table>
+          <thead><tr><th>Nombre</th><th>Nacimiento</th><th>Posición</th><th></th></tr></thead>
+          <tbody>
+            {% for j in e.jugadores.all %}
+              <tr>
+                <td>{{ j.nombre }}</td>
+                <td>{{ j.fecha_nacimiento|date:"d/m/Y" }}</td>
+                <td>{{ j.get_posicion_campo_display|default:"—" }}</td>
+                <td><a href="{% url 'panel_jugador_editar' j.id %}">Editar</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <div class="empty-note">Todavía no hay jugadores en este equipo.</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-note">Todavía no tienes equipos registrados. Empieza creando uno.</div>
+  {% endif %}
+</section>
+
+<footer>
+  <div class="wrap">Panel de administrador de club — Semillero beta.</div>
+</footer>
+
+</body>
+</html>

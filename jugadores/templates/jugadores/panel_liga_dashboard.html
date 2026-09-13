@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de liga — Semillero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 28px;}
+  header{padding:24px 0;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .navlink{color:var(--muted);font-size:13px;text-decoration:none;margin-left:18px;}
+  .navlink:hover{color:var(--maroon);}
+
+  .hero{padding:36px 0 24px;}
+  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;margin:0 0 4px;}
+  .hero p{color:var(--muted);font-size:13.5px;margin:0;}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:24px 0;}
+  .stat{background:var(--panel);padding:20px;text-align:center;}
+  .stat .n{font-family:'Fraunces',serif;font-weight:600;font-size:26px;color:var(--maroon);}
+  .stat .l{color:var(--muted);font-size:12px;margin-top:4px;}
+
+  .links{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:32px;}
+  .linkcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;text-decoration:none;color:var(--ink);}
+  .linkcard:hover{border-color:var(--maroon);}
+  .linkcard h3{font-family:'Fraunces',serif;font-weight:600;font-size:16px;margin:0 0 6px;}
+  .linkcard p{color:var(--muted);font-size:13px;margin:0;}
+
+  .section h2{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin:0 0 14px;}
+  .partido-row{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:8px;font-size:13.5px;display:flex;justify-content:space-between;}
+  .partido-row .meta{color:var(--muted);font-size:12px;}
+  .empty-note{color:var(--muted);font-size:14px;}
+
+  footer{padding:32px 0 50px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <div>
+      <a href="{% url 'buscador_jugadores' %}" class="navlink">Ver jugadores</a>
+      <a href="{% url 'panel_logout' %}" class="navlink">Cerrar sesión</a>
+    </div>
+  </div>
+</header>
+
+<section class="wrap">
+  <div class="hero">
+    <h1>Panel de liga</h1>
+    <p>Calendario, estadísticas de jugadores y tabla de posiciones de toda la liga.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">{{ total_partidos }}</div><div class="l">Partidos cargados</div></div>
+    <div class="stat"><div class="n">{{ total_jugadores }}</div><div class="l">Jugadores</div></div>
+    <div class="stat"><div class="n">{{ total_equipos }}</div><div class="l">Equipos</div></div>
+  </div>
+
+  <div class="links">
+    <a href="{% url 'panel_liga_calendario' %}" class="linkcard">
+      <h3>Calendario</h3>
+      <p>Agregar partidos y ver el historial cargado.</p>
+    </a>
+    <a href="{% url 'panel_liga_equipos' %}" class="linkcard">
+      <h3>Estadísticas de equipos</h3>
+      <p>Tabla de posiciones por categoría.</p>
+    </a>
+  </div>
+
+  <div class="section">
+    <h2>Últimos partidos cargados</h2>
+    {% if proximos_partidos %}
+      {% for p in proximos_partidos %}
+        <a href="{% url 'panel_liga_partido_detalle' p.id %}" style="text-decoration:none;color:inherit;">
+          <div class="partido-row">
+            <div>{{ p.equipo_local }} vs. {{ p.equipo_visitante }}</div>
+            <div class="meta">{{ p.fecha|date:"d/m/Y" }}</div>
+          </div>
+        </a>
+      {% endfor %}
+    {% else %}
+      <div class="empty-note">Todavía no hay partidos cargados. Empieza por el calendario.</div>
+    {% endif %}
+  </div>
+</section>
+
+<footer><div class="wrap">Panel de administrador de liga — Semillero beta.</div></footer>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadísticas de {{ jugador.nombre }} — Panel de liga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:600px;margin:0 auto;padding:0 28px;}
+  header{padding:24px 0;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .back{color:var(--muted);font-size:13px;text-decoration:none;}
+  .back:hover{color:var(--maroon);}
+
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:36px 0 4px;}
+  .meta{color:var(--muted);font-size:13.5px;margin-bottom:24px;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;margin-bottom:50px;}
+  .card h2{font-family:'Fraunces',serif;font-weight:600;font-size:15px;margin:22px 0 12px;color:var(--maroon);}
+  .card h2:first-child{margin-top:0;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;margin-top:10px;}
+  input, select{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:13.5px;font-family:'Public Sans',sans-serif;}
+  button{margin-top:24px;width:100%;background:var(--maroon);color:#fff;border:none;border-radius:9px;padding:12px;font-size:14.5px;font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'panel_liga_partido_detalle' partido.id %}" class="back">&larr; Volver al partido</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>{{ jugador.nombre }}</h1>
+  <div class="meta">{{ partido.equipo_local }} vs. {{ partido.equipo_visitante }} · {{ partido.fecha|date:"d/m/Y" }}</div>
+
+  <div class="card">
+    <form method="post">
+      {% csrf_token %}
+
+      <label for="{{ form.posicion_jugada.id_for_label }}">Posición jugada</label>
+      {{ form.posicion_jugada }}
+
+      <h2>Bateo</h2>
+      <div class="grid3">
+        <div><label>Turnos</label>{{ form.turnos }}</div>
+        <div><label>Hits</label>{{ form.hits }}</div>
+        <div><label>Dobles</label>{{ form.dobles }}</div>
+        <div><label>Triples</label>{{ form.triples }}</div>
+        <div><label>Jonrones</label>{{ form.jonrones }}</div>
+        <div><label>Carreras</label>{{ form.carreras_anotadas }}</div>
+        <div><label>Impulsadas</label>{{ form.impulsadas }}</div>
+        <div><label>Bases robadas</label>{{ form.bases_robadas }}</div>
+        <div><label>Ponches</label>{{ form.ponches }}</div>
+        <div><label>Base por bolas</label>{{ form.base_por_bolas }}</div>
+      </div>
+
+      <h2>Defensa</h2>
+      <div class="grid3">
+        <div><label>Outs (PO)</label>{{ form.putouts }}</div>
+        <div><label>Asistencias</label>{{ form.asistencias }}</div>
+        <div><label>Errores</label>{{ form.errores }}</div>
+      </div>
+
+      <h2>Pitcheo <span style="color:var(--muted);font-weight:400;font-size:12px;">(déjalo en 0 si no lanzó)</span></h2>
+      <div class="grid3">
+        <div><label>Outs lanzados</label>{{ form.outs_lanzados }}</div>
+        <div><label>Carreras permitidas</label>{{ form.carreras_permitidas }}</div>
+        <div><label>Hits permitidos</label>{{ form.hits_permitidos }}</div>
+        <div><label>BB otorgadas</label>{{ form.base_por_bolas_permitidas }}</div>
+        <div><label>Ponches propinados</label>{{ form.ponches_pitcheo }}</div>
+      </div>
+
+      <button type="submit">Guardar estadísticas</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

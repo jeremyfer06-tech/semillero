@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ jugador.nombre }} vs {{ juego.rival }} — Semillero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:820px;margin:0 auto;padding:0 28px;}
+  header{padding:24px 0;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .back{color:var(--muted);font-size:13px;text-decoration:none;}
+  .back:hover{color:var(--maroon);}
+
+  .game-hero{padding:40px 0 30px;border-bottom:1px solid var(--line);}
+  .game-hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;margin:0 0 8px;}
+  .game-hero .meta{color:var(--muted);font-size:14px;}
+
+  .section{padding:32px 0;border-bottom:1px solid var(--line);}
+  .section h2{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin:0 0 16px;}
+
+  .line-stats{display:flex;flex-wrap:wrap;gap:10px;}
+  .line-chip{background:var(--grass-50);color:var(--grass);font-size:13px;padding:6px 13px;border-radius:8px;font-family:'IBM Plex Mono',monospace;}
+  .line-chip.pitch{background:var(--maroon-50);color:var(--maroon);}
+  .line-chip.def{background:var(--panel);border:1px solid var(--line);color:var(--ink);}
+
+  .videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+  .video-card{
+    position:relative;border-radius:12px;overflow:hidden;background:#000;
+    border:1px solid var(--line);
+  }
+  .video-card video{width:100%;display:block;max-height:360px;object-fit:contain;background:#000;}
+  .video-card .badge-overlay{
+    position:absolute;top:12px;left:12px;z-index:2;
+    background:var(--maroon);color:#fff;font-size:11px;font-weight:600;
+    padding:5px 12px;border-radius:20px;letter-spacing:.02em;
+  }
+  .video-card .caption{padding:14px 16px;background:var(--panel);color:var(--ink);}
+  .video-card .caption h3{margin:0 0 3px;font-size:14px;font-family:'Fraunces',serif;font-weight:600;}
+  .video-card .caption p{margin:0;color:var(--muted);font-size:12px;}
+  .video-card.pending{aspect-ratio:16/9;background:var(--panel);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+  .video-card.pending .badge-overlay{position:static;background:var(--maroon-50);color:var(--maroon);margin-bottom:4px;}
+  .video-card.pending span.note{color:var(--muted);font-size:12px;}
+
+  .mini-stats{display:flex;gap:20px;flex-wrap:wrap;}
+  .mini-stat{font-size:13.5px;}
+  .mini-stat b{font-family:'IBM Plex Mono',monospace;color:var(--maroon);}
+
+  .empty-note{color:var(--muted);font-size:13.5px;}
+
+  footer{padding:32px 0 50px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'ficha_jugador' jugador.id %}" class="back">&larr; Volver a la ficha de {{ jugador.nombre }}</a>
+  </div>
+</header>
+
+<section class="game-hero">
+  <div class="wrap">
+    <h1>{{ jugador.equipo }} vs. {{ juego.rival|default:"Rival sin registrar" }}</h1>
+    <div class="meta">
+      {{ juego.fecha|date:"d/m/Y" }}{% if juego.hora %} · {{ juego.hora|time:"g:i A" }}{% endif %}{% if juego.estadio %} · {{ juego.estadio }}{% endif %}
+      {% if juego.get_posicion_jugada_display %} · Jugó de {{ juego.get_posicion_jugada_display }}{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Línea del juego — {{ jugador.nombre }}</h2>
+    <div class="line-stats">
+      <span class="line-chip">{{ juego.hits }}-{{ juego.turnos }}</span>
+      {% if juego.dobles %}<span class="line-chip">{{ juego.dobles }} 2B</span>{% endif %}
+      {% if juego.triples %}<span class="line-chip">{{ juego.triples }} 3B</span>{% endif %}
+      {% if juego.jonrones %}<span class="line-chip">{{ juego.jonrones }} HR</span>{% endif %}
+      {% if juego.carreras_anotadas %}<span class="line-chip">{{ juego.carreras_anotadas }} CA</span>{% endif %}
+      {% if juego.impulsadas %}<span class="line-chip">{{ juego.impulsadas }} CI</span>{% endif %}
+      {% if juego.bases_robadas %}<span class="line-chip">{{ juego.bases_robadas }} BR</span>{% endif %}
+      {% if juego.ponches %}<span class="line-chip">{{ juego.ponches }} K</span>{% endif %}
+      {% if juego.base_por_bolas %}<span class="line-chip">{{ juego.base_por_bolas }} BB</span>{% endif %}
+      {% if defensa_juego.putouts or defensa_juego.asistencias or defensa_juego.errores %}
+        <span class="line-chip def">{{ defensa_juego.putouts }} PO</span>
+        <span class="line-chip def">{{ defensa_juego.asistencias }} A</span>
+        <span class="line-chip def">{{ defensa_juego.errores }} E</span>
+      {% endif %}
+      {% if pitcheo_juego %}
+        <span class="line-chip pitch">{{ pitcheo_juego.entradas_display }} IP</span>
+        <span class="line-chip pitch">{{ pitcheo_juego.carreras }} CP</span>
+        <span class="line-chip pitch">{{ pitcheo_juego.hits }} H (P)</span>
+        <span class="line-chip pitch">{{ pitcheo_juego.ponches }} K (P)</span>
+        <span class="line-chip pitch">{{ pitcheo_juego.base_por_bolas }} BB (P)</span>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Acumulado de temporada hasta este juego</h2>
+    <div class="mini-stats">
+      <div class="mini-stat">AVG <b>{{ acumulado.avg|stringformat:".3f" }}</b></div>
+      <div class="mini-stat">OBP <b>{{ acumulado.obp|stringformat:".3f" }}</b></div>
+      <div class="mini-stat">SLG <b>{{ acumulado.slg|stringformat:".3f" }}</b></div>
+      <div class="mini-stat">OPS <b>{{ acumulado.ops|stringformat:".3f" }}</b></div>
+      <div class="mini-stat">HR <b>{{ acumulado.jonrones }}</b></div>
+      <div class="mini-stat">CI <b>{{ acumulado.impulsadas }}</b></div>
+      <div class="mini-stat">CA <b>{{ acumulado.carreras }}</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;">
+  <div class="wrap">
+    <h2>Video de este juego</h2>
+    {% if videos %}
+      <div class="videos-grid">
+        {% for v in videos %}
+          {% if v.archivo %}
+            <div class="video-card">
+              <span class="badge-overlay">{{ v.get_tipo_toma_display }}</span>
+              <video controls preload="metadata" src="{{ v.archivo.url }}"></video>
+              <div class="caption">
+                <h3>{{ v.get_tipo_toma_display }}</h3>
+                <p>{{ jugador.nombre }} · {{ juego.fecha|date:"d/m/Y" }} vs {{ juego.rival }}</p>
+              </div>
+            </div>
+          {% else %}
+            <div class="video-card pending">
+              <span class="badge-overlay">{{ v.get_tipo_toma_display }}</span>
+              <span class="note">Pendiente de subir</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-note">Todavía no hay video cargado para este juego.</div>
+    {% endif %}
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Semillero — beta.</div>
+</footer>
+
+</body>
+</html>

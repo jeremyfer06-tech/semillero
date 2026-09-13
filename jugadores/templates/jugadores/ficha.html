@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ jugador.nombre }} — Semillero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 28px;}
+  header{padding:24px 0;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .back{color:var(--muted);font-size:13px;text-decoration:none;}
+  .back:hover{color:var(--maroon);}
+
+  .profile-hero{padding:44px 0 36px;display:flex;gap:24px;align-items:center;border-bottom:1px solid var(--line);}
+  .avatar-lg{width:84px;height:84px;border-radius:50%;background:var(--maroon-50);color:var(--maroon);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:28px;flex-shrink:0;}
+  .profile-hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:32px;margin:0 0 8px;}
+  .profile-hero .meta{color:var(--muted);font-size:14.5px;}
+  .profile-hero .badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .badge{font-size:11.5px;padding:4px 11px;border-radius:20px;background:var(--grass-50);color:var(--grass);}
+  .badge.alt{background:var(--maroon-50);color:var(--maroon);}
+
+  .section{padding:36px 0;border-bottom:1px solid var(--line);}
+  .section h2{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:0 0 4px;}
+  .section .sub{color:var(--muted);font-size:12.5px;margin:0 0 18px;}
+
+  .info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .info-item{background:var(--panel);padding:18px;}
+  .info-item .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .info-item .v{font-size:15px;font-weight:600;}
+
+  .stat-tabs{display:flex;gap:8px;margin-bottom:16px;}
+  .stat-tab{font-size:12.5px;padding:6px 14px;border-radius:20px;background:var(--panel);border:1px solid var(--line);color:var(--muted);}
+  .stat-tab.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .stat-block{margin-bottom:22px;}
+  .stat-block .label{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+  .stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .stat-box{background:var(--panel);padding:16px 6px;text-align:center;}
+  .stat-box .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:19px;color:var(--maroon);}
+  .stat-box .l{color:var(--muted);font-size:10px;margin-top:4px;text-transform:uppercase;letter-spacing:.03em;}
+  .stat-box.grass .n{color:var(--grass);}
+
+  .empty-note{color:var(--muted);font-size:13.5px;padding:14px 0;}
+
+  .games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .game-card-min{
+    display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;text-decoration:none;color:var(--ink);
+  }
+  .game-card-min:hover{border-color:var(--maroon);}
+  .team-row{display:flex;align-items:center;gap:10px;}
+  .team-row + .team-row{margin-top:10px;}
+  .team-logo{
+    width:32px;height:32px;border-radius:50%;background:var(--maroon-50);color:var(--maroon);
+    display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;
+    font-family:'Fraunces',serif;flex-shrink:0;
+  }
+  .team-name{font-weight:600;font-size:14px;}
+  .gcm-meta{color:var(--muted);font-size:11px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);}
+
+  @media(max-width:820px){ .games-grid{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:560px){ .games-grid{grid-template-columns:1fr;} }
+
+  footer{padding:32px 0 50px;color:var(--muted);font-size:12px;}
+
+  @media(max-width:720px){
+    .info-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(3,1fr);}
+    .profile-hero{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'buscador_jugadores' %}" class="back">&larr; Volver al buscador</a>
+  </div>
+</header>
+
+<section class="profile-hero">
+  <div class="wrap" style="display:flex;gap:24px;align-items:center;">
+    <div class="avatar-lg">{{ jugador.nombre|slice:":1" }}{{ jugador.nombre|cut:" "|slice:"1:2" }}</div>
+    <div>
+      <h1>{{ jugador.nombre }}</h1>
+      <div class="meta">{{ jugador.equipo }} · {{ jugador.equipo.campeonato.liga.nombre }}</div>
+      <div class="badges">
+        <span class="badge">{{ jugador.equipo.campeonato.categoria.nombre }}</span>
+        {% for p in posiciones_regulares %}
+          <span class="badge alt">{{ p.nombre }}{% if p.pct %} · {{ p.pct }}%{% endif %}</span>
+        {% endfor %}
+      </div>
+      {% if posiciones_ocasionales %}
+        <div style="color:var(--muted);font-size:12.5px;margin-top:10px;">
+          También ha cubierto: {% for p in posiciones_ocasionales %}{{ p.nombre }} ({{ p.pct }}%){% if not forloop.last %}, {% endif %}{% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Información general</h2>
+    <div class="info-grid">
+      <div class="info-item"><div class="l">Fecha de nacimiento</div><div class="v">{{ jugador.fecha_nacimiento|date:"d/m/Y" }}</div></div>
+      <div class="info-item"><div class="l">Club</div><div class="v">{{ jugador.equipo.club.nombre }}</div></div>
+      <div class="info-item"><div class="l">Categoría</div><div class="v">{{ jugador.equipo.campeonato.categoria.nombre }}</div></div>
+      <div class="info-item"><div class="l">Temporada</div><div class="v">{{ jugador.equipo.campeonato.temporada }}</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Estadísticas de bateo</h2>
+    <p class="sub">OBP y OPS+ son aproximados en este beta — mejoran en precisión mientras más juegos y más jugadores de la misma categoría se registren.</p>
+
+    <div class="stat-block">
+      <div class="label">Esta temporada ({{ jugador.equipo.campeonato.temporada }}) — {{ total_juegos_temporada }} juego{{ total_juegos_temporada|pluralize }}</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="n">{{ bateo_temporada.avg|stringformat:".3f" }}</div><div class="l">AVG</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_temporada.obp|stringformat:".3f" }}</div><div class="l">OBP</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_temporada.slg|stringformat:".3f" }}</div><div class="l">SLG</div></div>
+        <div class="stat-box grass"><div class="n">{{ bateo_temporada.ops|stringformat:".3f" }}</div><div class="l">OPS</div></div>
+        <div class="stat-box grass"><div class="n">{% if ops_plus_temporada is not None %}{{ ops_plus_temporada }}{% else %}—{% endif %}</div><div class="l">OPS+</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_temporada.jonrones }}</div><div class="l">HR</div></div>
+      </div>
+    </div>
+
+    <div class="stat-block">
+      <div class="label">De por vida</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="n">{{ bateo_vida.avg|stringformat:".3f" }}</div><div class="l">AVG</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_vida.obp|stringformat:".3f" }}</div><div class="l">OBP</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_vida.slg|stringformat:".3f" }}</div><div class="l">SLG</div></div>
+        <div class="stat-box grass"><div class="n">{{ bateo_vida.ops|stringformat:".3f" }}</div><div class="l">OPS</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_vida.hits }}</div><div class="l">Hits</div></div>
+        <div class="stat-box"><div class="n">{{ bateo_vida.jonrones }}</div><div class="l">HR</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Defensa</h2>
+    <div class="stat-block">
+      <div class="label">Esta temporada</div>
+      {% if defensa_temporada.putouts or defensa_temporada.asistencias or defensa_temporada.errores %}
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-box"><div class="n">{{ defensa_temporada.putouts }}</div><div class="l">PO</div></div>
+        <div class="stat-box"><div class="n">{{ defensa_temporada.asistencias }}</div><div class="l">A</div></div>
+        <div class="stat-box"><div class="n">{{ defensa_temporada.errores }}</div><div class="l">E</div></div>
+        <div class="stat-box grass"><div class="n">{% if defensa_temporada.fld_pct is not None %}{{ defensa_temporada.fld_pct|stringformat:".3f" }}{% else %}—{% endif %}</div><div class="l">FLD%</div></div>
+      </div>
+      {% else %}
+        <div class="empty-note">Todavía no hay jugadas defensivas registradas.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if pitcheo_vida %}
+<section class="section">
+  <div class="wrap">
+    <h2>Pitcheo</h2>
+    <p class="sub">En béisbol menor casi todo el roster lanza en algún juego — esta sección solo aparece si el jugador tiene innings registrados.</p>
+    <div class="stat-block">
+      <div class="label">Esta temporada</div>
+      {% if pitcheo_temporada %}
+      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
+        <div class="stat-box"><div class="n">{{ pitcheo_temporada.entradas_display }}</div><div class="l">IP</div></div>
+        <div class="stat-box grass"><div class="n">{{ pitcheo_temporada.era|stringformat:".2f" }}</div><div class="l">ERA</div></div>
+        <div class="stat-box grass"><div class="n">{{ pitcheo_temporada.whip|stringformat:".2f" }}</div><div class="l">WHIP</div></div>
+        <div class="stat-box"><div class="n">{{ pitcheo_temporada.ponches }}</div><div class="l">K</div></div>
+        <div class="stat-box"><div class="n">{{ pitcheo_temporada.base_por_bolas }}</div><div class="l">BB</div></div>
+      </div>
+      {% else %}
+        <div class="empty-note">No lanzó esta temporada (pero sí en otra, por eso aparece esta sección).</div>
+      {% endif %}
+    </div>
+    <div class="stat-block">
+      <div class="label">De por vida</div>
+      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
+        <div class="stat-box"><div class="n">{{ pitcheo_vida.entradas_display }}</div><div class="l">IP</div></div>
+        <div class="stat-box grass"><div class="n">{{ pitcheo_vida.era|stringformat:".2f" }}</div><div class="l">ERA</div></div>
+        <div class="stat-box grass"><div class="n">{{ pitcheo_vida.whip|stringformat:".2f" }}</div><div class="l">WHIP</div></div>
+        <div class="stat-box"><div class="n">{{ pitcheo_vida.ponches }}</div><div class="l">K</div></div>
+        <div class="stat-box"><div class="n">{{ pitcheo_vida.base_por_bolas }}</div><div class="l">BB</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="wrap">
+    <h2>Logros por temporada</h2>
+    {% if logros_por_temporada %}
+      {% for temporada, logros in logros_por_temporada.items %}
+        <div style="margin-bottom:14px;">
+          <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">{{ temporada }}</div>
+          {% for logro in logros %}
+            <div style="background:var(--grass-50);color:var(--grass);border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:6px;">{{ logro.descripcion }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-note">Todavía no hay logros registrados para este jugador.</div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;">
+  <div class="wrap">
+    <h2>Juego a juego — {{ jugador.equipo.campeonato.temporada }}</h2>
+    <p class="sub">Toca un juego para ver sus estadísticas, defensa, pitcheo y video.</p>
+
+    {% if juegos_lista %}
+      <div class="games-grid">
+      {% for juego in juegos_lista %}
+        <a href="{% url 'detalle_juego' jugador.id juego.id %}" class="game-card-min">
+          <div class="team-row">
+            <div class="team-logo">{{ juego.rival|default:"?"|slice:":2" }}</div>
+            <div class="team-name">{{ juego.rival|default:"Rival sin registrar" }}</div>
+          </div>
+          <div class="team-row">
+            <div class="team-logo">{{ jugador.equipo.club.nombre|slice:":2" }}</div>
+            <div class="team-name">{{ jugador.equipo }}</div>
+          </div>
+          <div class="gcm-meta">
+            {{ juego.fecha|date:"d/m/Y" }}{% if juego.hora %} · {{ juego.hora|time:"g:i A" }}{% endif %}{% if juego.estadio %} · {{ juego.estadio }}{% endif %}
+          </div>
+        </a>
+      {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-note">Todavía no hay juegos registrados para este jugador en esta temporada.</div>
+    {% endif %}
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Ficha técnica generada a partir de la base de datos real del proyecto.</div>
+</footer>
+
+</body>
+</html>

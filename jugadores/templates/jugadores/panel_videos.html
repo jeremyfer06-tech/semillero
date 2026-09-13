@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if club %}Videos de {{ club.nombre }}{% else %}Videos de la liga{% endif %} — Semillero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 28px;}
+  header{padding:24px 0;border-bottom:1px solid var(--line);}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .logout{color:var(--muted);font-size:13px;text-decoration:none;}
+  .logout:hover{color:var(--maroon);}
+
+  .hero{padding:36px 0 24px;}
+  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;margin:0 0 4px;}
+  .hero p{color:var(--muted);font-size:13.5px;margin:0;}
+
+  .msg{background:var(--grass-50);color:var(--grass);padding:12px 16px;border-radius:8px;font-size:13.5px;margin-bottom:20px;}
+  .msg.error{background:var(--maroon-50);color:var(--maroon);}
+
+  .juego-row{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .juego-info .matchup{font-weight:600;font-size:14px;}
+  .juego-info .meta{color:var(--muted);font-size:12.5px;margin-top:2px;}
+  .video-count{color:var(--muted);font-size:12px;}
+  .video-count b{color:var(--grass);}
+  .btn{background:var(--maroon);color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;}
+  .empty-note{color:var(--muted);font-size:14px;}
+
+  footer{padding:32px 0 50px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="{% url 'buscador_jugadores' %}" class="logout">Ver jugadores</a>
+      <a href="{% url 'panel_logout' %}" class="logout">Cerrar sesión</a>
+    </div>
+  </div>
+</header>
+
+<section class="wrap">
+  {% if messages %}
+    {% for m in messages %}<div class="msg {% if m.tags %}{{ m.tags }}{% endif %}">{{ m }}</div>{% endfor %}
+  {% endif %}
+
+  <div class="hero">
+    <h1>{% if club %}Videos de {{ club.nombre }}{% else %}Videos de toda la liga{% endif %}</h1>
+    <p>Elige un juego para agregarle la toma correspondiente (bateo, lanzamiento, fildeo...).</p>
+  </div>
+
+  {% if juegos %}
+    {% for j in juegos %}
+      <div class="juego-row">
+        <div class="juego-info">
+          <div class="matchup">{{ j.jugador.nombre }} — {{ j.equipo }}{% if not club %} <span style="color:var(--muted);font-weight:400;">({{ j.equipo.club.nombre }})</span>{% endif %} vs. {{ j.rival|default:"Rival sin registrar" }}</div>
+          <div class="meta">{{ j.fecha|date:"d/m/Y" }}{% if j.estadio %} · {{ j.estadio }}{% endif %}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="video-count"><b>{{ j.videos.all|length }}</b> video{{ j.videos.all|length|pluralize }} cargado{{ j.videos.all|length|pluralize }}</div>
+          <a href="{% url 'panel_video_nuevo' j.id %}" class="btn">+ Agregar video</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-note">Todavía no hay juegos registrados para los jugadores de este club. Pídele al administrador de equipo que cargue los juegos primero.</div>
+  {% endif %}
+</section>
+
+<footer>
+  <div class="wrap">Panel de camarógrafo — Semillero beta.</div>
+</footer>
+
+</body>
+</html>

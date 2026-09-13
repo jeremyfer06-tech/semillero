@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso de equipo — Semillero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
+    --maroon:#8C2F39; --maroon-50:#F4E7E8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  .box{width:100%;max-width:380px;padding:0 20px;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:22px;text-align:center;margin-bottom:6px;text-decoration:none;color:var(--ink);display:block;}
+  .brand em{font-style:normal;color:var(--maroon);}
+  .sub{text-align:center;color:var(--muted);font-size:13.5px;margin-bottom:28px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;}
+  label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;}
+  input{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:14.5px;margin-bottom:16px;font-family:'Public Sans',sans-serif;}
+  button{width:100%;background:var(--maroon);color:#fff;border:none;border-radius:9px;padding:12px;font-size:14.5px;font-weight:600;cursor:pointer;}
+  .error{background:var(--maroon-50);color:var(--maroon);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;}
+  .back{display:block;text-align:center;margin-top:18px;color:var(--muted);font-size:13px;text-decoration:none;}
+  .back:hover{color:var(--maroon);}
+</style>
+</head>
+<body>
+  <div class="box">
+    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <div class="sub">Acceso para administradores de equipo</div>
+    <div class="card">
+      {% if error %}<div class="error">{{ error }}</div>{% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" autofocus>
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password">
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+    <a href="{% url 'inicio' %}" class="back">&larr; Volver al inicio</a>
+  </div>
+</body>
+</html>
