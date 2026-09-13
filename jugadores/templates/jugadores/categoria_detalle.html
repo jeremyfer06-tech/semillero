@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ categoria.nombre }} — Semillero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
@@ -37,10 +37,17 @@
   .standings{margin-top:48px;}
   .standings h2{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:0 0 4px;}
   .standings p{color:var(--muted);font-size:13px;margin:0 0 18px;}
-  .standings table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
-  .standings thead th{text-align:left;color:var(--muted);font-weight:500;font-size:11px;padding:12px 10px;background:var(--maroon-50);text-transform:uppercase;}
-  .standings thead th.num, .standings tbody td.num{text-align:right;}
-  .standings tbody td{padding:10px 10px;border-top:1px solid var(--line);}
+  .standings table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;table-layout:fixed;}
+  .standings thead th{text-align:left;color:var(--muted);font-weight:600;font-size:10.5px;padding:10px 8px;background:var(--maroon-50);text-transform:uppercase;letter-spacing:.03em;}
+  .standings thead th:first-child, .standings tbody td:first-child{width:auto;padding-left:16px;}
+  .standings thead th.num, .standings tbody td.num{text-align:right;width:38px;padding-right:12px;}
+  .standings thead th.num.pts, .standings tbody td.num.pts{width:44px;color:var(--maroon);}
+  .standings tbody td{padding:9px 8px;border-top:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);}
+  .standings tbody td:first-child{font-family:'Public Sans',sans-serif;font-weight:500;font-size:13.5px;}
+  .standings tbody td.num.pts{font-weight:600;}
+  .standings tbody tr:hover{background:var(--bg);}
+  .standings tbody tr:first-child td{background:var(--grass-50);}
+  .standings tbody tr:first-child td:first-child{border-left:3px solid var(--grass);padding-left:13px;}
   .standings .fase-label{font-family:'Fraunces',serif;font-weight:600;font-size:14px;margin:20px 0 8px;color:var(--maroon);}
   .standings .fase-label:first-child{margin-top:0;}
 
@@ -93,7 +100,7 @@
             <tr>
               <th>Equipo</th>
               <th class="num">J</th><th class="num">G</th><th class="num">P</th><th class="num">E</th>
-              <th class="num">CF</th><th class="num">CC</th><th class="num">Pts</th>
+              <th class="num">CF</th><th class="num">CC</th><th class="num pts">Pts</th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +113,7 @@
                 <td class="num">{{ p.empatados }}</td>
                 <td class="num">{{ p.carreras_favor }}</td>
                 <td class="num">{{ p.carreras_contra }}</td>
-                <td class="num">{{ p.puntos }}</td>
+                <td class="num pts">{{ p.puntos }}</td>
               </tr>
             {% endfor %}
           </tbody>
