@@ -52,8 +52,12 @@ class ClubAdmin(admin.ModelAdmin):
 @admin.register(Equipo)
 class EquipoAdmin(ClubScopedAdmin):
     club_lookup = "club"
-    list_display = ("__str__", "campeonato")
-    list_filter = ("campeonato",)
+    list_display = ("__str__", "categoria", "campeonato")
+    list_filter = ("campeonato__categoria", "campeonato")
+
+    @admin.display(description="Categoría")
+    def categoria(self, obj):
+        return obj.campeonato.categoria.nombre
 
 
 class RepresentanteInline(admin.StackedInline):

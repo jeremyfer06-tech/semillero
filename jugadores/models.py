@@ -45,7 +45,7 @@ class Campeonato(models.Model):
         verbose_name_plural = "Campeonatos"
 
     def __str__(self):
-        return f"{self.nombre} ({self.temporada})"
+        return f"{self.categoria.nombre} — {self.nombre} ({self.temporada})"
 
 
 class Club(models.Model):
