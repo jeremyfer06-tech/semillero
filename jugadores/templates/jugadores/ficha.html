@@ -233,7 +233,7 @@
       {% for juego in juegos_lista %}
         <a href="{% url 'detalle_juego' jugador.id juego.id %}" class="game-card-min">
           <div class="team-row">
-            <div class="team-logo">{{ juego.rival|default:"?"|slice:":2" }}</div>
+            <div class="team-logo">{{ juego.rival.club.nombre|default:"?"|slice:":2" }}</div>
             <div class="team-name">{{ juego.rival|default:"Rival sin registrar" }}</div>
           </div>
           <div class="team-row">
