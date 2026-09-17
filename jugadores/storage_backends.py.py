@@ -1,0 +1,1 @@
+import os from storages.backends.s3 import S3Storage class SupabasePublicStorage(S3Storage): def url(self, name, parameters=None, expire=None, http_method=None): base = os.environ.get('SUPABASE_PUBLIC_STORAGE_URL', '').rstrip('/') return f"{base}/{self.bucket_name}/{name}"

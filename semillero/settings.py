@@ -151,10 +151,30 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
-}
+if os.environ.get('SUPABASE_S3_BUCKET_NAME'):
+    STORAGES = {
+        "default": {
+            "BACKEND": "jugadores.storage_backends.SupabasePublicStorage",
+            "OPTIONS": {
+                "bucket_name": os.environ.get('SUPABASE_S3_BUCKET_NAME'),
+                "endpoint_url": os.environ.get('SUPABASE_S3_ENDPOINT_URL'),
+                "access_key": os.environ.get('SUPABASE_S3_ACCESS_KEY_ID'),
+                "secret_key": os.environ.get('SUPABASE_S3_SECRET_ACCESS_KEY'),
+                "region_name": os.environ.get('SUPABASE_S3_REGION', 'us-east-1'),
+                "signature_version": "s3v4",
+                "addressing_style": "path",
+                "default_acl": "public-read",
+                "querystring_auth": False,
+                "file_overwrite": False,
+            },
+        },
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
+else:
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
 
 # Archivos subidos por administradores (videos, fotos). En el beta se guardan
 # localmente; para producción se recomienda apuntar esto a Cloudflare R2.
