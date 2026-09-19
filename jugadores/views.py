@@ -121,6 +121,16 @@ def buscador_jugadores(request):
             total_jugadores=Count('campeonatos__equipos__jugadores', distinct=True),
         ).order_by('orden')
 
+    panel_url_name = None
+    if request.user.is_authenticated:
+        perfil = PerfilAdministrador.objects.filter(user=request.user).first()
+        if perfil:
+            panel_url_name = {
+                'admin_club': 'panel_dashboard',
+                'admin_liga': 'panel_liga_dashboard',
+                'camarografo': 'panel_videos',
+            }.get(perfil.rol)
+
     context = {
         'hay_busqueda': hay_busqueda,
         'jugadores': jugadores,
@@ -133,6 +143,7 @@ def buscador_jugadores(request):
             'q': q, 'liga': liga_id, 'categoria': categoria_id,
             'club': club_id, 'anio_min': anio_min, 'anio_max': anio_max,
         },
+        'panel_url_name': panel_url_name,
     }
     return render(request, 'jugadores/buscador.html', context)
 
