@@ -23,11 +23,29 @@
   h1{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:36px 0 4px;}
   .meta{color:var(--muted);font-size:13.5px;margin-bottom:24px;}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;}
+  .msg{background:#EAEEE4;color:#48633B;padding:12px 16px;border-radius:8px;font-size:13.5px;margin-bottom:20px;}
+  .msg.error{background:var(--maroon-50);color:var(--maroon);}
   label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;margin-top:16px;}
   label:first-child{margin-top:0;}
   input, select{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px;font-family:'Public Sans',sans-serif;}
   .errorlist{list-style:none;padding:0;margin:4px 0 0;color:var(--maroon);font-size:12.5px;}
   button{margin-top:26px;width:100%;background:var(--maroon);color:#fff;border:none;border-radius:9px;padding:12px;font-size:14.5px;font-weight:600;cursor:pointer;}
+
+  .cargados{margin-top:32px;}
+  .cargados h2{font-family:'Fraunces',serif;font-weight:600;font-size:16px;margin:0 0 12px;}
+  .video-row{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  }
+  .video-row .tipo{font-weight:600;font-size:13.5px;}
+  .video-row .archivo{color:var(--muted);font-size:12px;margin-top:2px;}
+  .video-row form{margin:0;}
+  .btn-eliminar{
+    background:none;border:1px solid var(--maroon);color:var(--maroon);border-radius:7px;
+    padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+  }
+  .btn-eliminar:hover{background:var(--maroon-50);}
+  .empty-note{color:var(--muted);font-size:13px;}
 </style>
 </head>
 <body>
@@ -40,6 +58,10 @@
 </header>
 
 <div class="wrap">
+  {% if messages %}
+    {% for m in messages %}<div class="msg {% if m.tags %}{{ m.tags }}{% endif %}">{{ m }}</div>{% endfor %}
+  {% endif %}
+
   <h1>Agregar video</h1>
   <div class="meta">{{ juego.jugador.nombre }} — {{ juego.equipo }} vs. {{ juego.rival|default:"Rival sin registrar" }} · {{ juego.fecha|date:"d/m/Y" }}</div>
   <div class="card">
@@ -52,6 +74,26 @@
       {% endfor %}
       <button type="submit">Subir video</button>
     </form>
+  </div>
+
+  <div class="cargados">
+    <h2>Videos ya cargados para este juego</h2>
+    {% if videos_cargados %}
+      {% for v in videos_cargados %}
+        <div class="video-row">
+          <div>
+            <div class="tipo">{{ v.get_tipo_toma_display }}</div>
+            <div class="archivo">{% if v.archivo %}{{ v.archivo.name|slice:"-40:" }}{% else %}Sin archivo{% endif %} · {{ v.get_visibilidad_display }}</div>
+          </div>
+          <form method="post" action="{% url 'panel_video_eliminar' v.id %}" onsubmit="return confirm('¿Eliminar este video? Esta acción no se puede deshacer.');">
+            {% csrf_token %}
+            <button type="submit" class="btn-eliminar">Eliminar</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-note">Todavía no hay videos cargados para este juego.</div>
+    {% endif %}
   </div>
 </div>
 

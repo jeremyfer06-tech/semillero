@@ -259,7 +259,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 from .forms import EquipoForm, JugadorForm, VideoForm
-from .models import PerfilAdministrador
+from .models import PerfilAdministrador, Video
 
 
 def _perfil_por_rol(user, roles_permitidos=None):
@@ -447,13 +447,39 @@ def panel_video_form(request, juego_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Video cargado correctamente.')
-            return redirect('panel_videos')
+            return redirect('panel_video_nuevo', juego_id=juego.id)
     else:
         form = VideoForm(juego=juego)
 
     return render(request, 'jugadores/panel_video_form.html', {
         'form': form, 'club': perfil.club, 'juego': juego,
+        'videos_cargados': juego.videos.all().order_by('-id'),
     })
+
+
+@login_required(login_url='panel_login')
+def panel_video_eliminar(request, video_id):
+    perfil = _perfil_camarografo(request.user)
+    if perfil is None:
+        messages.error(request, 'Tu usuario no tiene permiso de camarógrafo.')
+        return redirect('panel_login')
+
+    video_qs = Video.objects.select_related('jugador__equipo__club', 'juego')
+    if perfil.club is not None:
+        video_qs = video_qs.filter(jugador__equipo__club=perfil.club)
+    video = get_object_or_404(video_qs, pk=video_id)
+    juego_id = video.juego_id
+
+    if request.method == 'POST':
+        # Borra también el archivo físico del storage, no solo el registro.
+        if video.archivo:
+            video.archivo.delete(save=False)
+        video.delete()
+        messages.success(request, 'Video eliminado.')
+
+    if juego_id:
+        return redirect('panel_video_nuevo', juego_id=juego_id)
+    return redirect('panel_videos')
 
 
 # ============================================================

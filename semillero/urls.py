@@ -25,7 +25,7 @@ from jugadores.views import (
     panel_dashboard, panel_equipo_form, panel_jugador_form, panel_login, panel_logout,
     panel_liga_calendario, panel_liga_dashboard, panel_liga_equipos,
     panel_liga_partido_detalle, panel_liga_posicion_eliminar, panel_liga_stats_form,
-    panel_video_form, panel_videos,
+    panel_video_eliminar, panel_video_form, panel_videos,
 )
 
 urlpatterns = [
@@ -51,6 +51,7 @@ urlpatterns = [
     # Panel del camarógrafo / encargado de video
     path('panel/videos/', panel_videos, name='panel_videos'),
     path('panel/videos/juego/<int:juego_id>/nuevo/', panel_video_form, name='panel_video_nuevo'),
+    path('panel/videos/<int:video_id>/eliminar/', panel_video_eliminar, name='panel_video_eliminar'),
 
     # Panel del administrador de liga
     path('panel/liga/', panel_liga_dashboard, name='panel_liga_dashboard'),
