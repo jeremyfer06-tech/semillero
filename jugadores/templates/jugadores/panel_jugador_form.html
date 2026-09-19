@@ -28,6 +28,12 @@
   .errorlist{list-style:none;padding:0;margin:4px 0 0;color:var(--maroon);font-size:12.5px;}
   .help{color:var(--muted);font-size:11.5px;margin-top:4px;}
   button{margin-top:26px;width:100%;background:var(--maroon);color:#fff;border:none;border-radius:9px;padding:12px;font-size:14.5px;font-weight:600;cursor:pointer;}
+  .btn-secundario{
+    display:block;margin-top:14px;width:100%;background:none;color:var(--maroon);
+    border:1px solid var(--maroon);border-radius:9px;padding:11px;font-size:13.5px;
+    font-weight:600;text-align:center;text-decoration:none;
+  }
+  .btn-secundario:hover{background:var(--maroon-50);}
 </style>
 </head>
 <body>
@@ -52,6 +58,9 @@
       {% endfor %}
       <button type="submit">Guardar</button>
     </form>
+    {% if editando %}
+      <a class="btn-secundario" href="{% url 'panel_jugador_consentimiento_pdf' jugador.id %}">Generar planilla de consentimiento (PDF)</a>
+    {% endif %}
   </div>
 </div>
 

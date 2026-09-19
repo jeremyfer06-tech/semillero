@@ -406,7 +406,28 @@ def panel_jugador_form(request, jugador_id=None):
 
     return render(request, 'jugadores/panel_jugador_form.html', {
         'form': form, 'club': perfil.club, 'editando': instancia is not None,
+        'jugador': instancia,
     })
+
+
+@login_required(login_url='panel_login')
+def panel_jugador_consentimiento_pdf(request, jugador_id):
+    perfil = _perfil_club_admin(request.user)
+    if perfil is None:
+        messages.error(request, 'Tu usuario no tiene un perfil de administrador de club asignado.')
+        return redirect('panel_login')
+
+    jugador = get_object_or_404(
+        Jugador.objects.select_related('equipo', 'equipo__club', 'equipo__campeonato', 'equipo__campeonato__categoria', 'equipo__campeonato__liga'),
+        pk=jugador_id, equipo__club=perfil.club,
+    )
+
+    from .consentimiento_pdf import generar_pdf_consentimiento
+    buffer = generar_pdf_consentimiento(jugador)
+    nombre_archivo = f"consentimiento_{jugador.nombre.replace(' ', '_').lower()}.pdf"
+    response = _HttpResponse(buffer.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+    return response
 
 
 @login_required(login_url='panel_login')
