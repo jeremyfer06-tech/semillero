@@ -34,6 +34,17 @@
     font-weight:600;text-align:center;text-decoration:none;
   }
   .btn-secundario:hover{background:var(--maroon-50);}
+  input[type="file"]{
+    padding:9px 10px;color:var(--muted);font-size:13.5px;
+  }
+  input[type="file"]::file-selector-button,
+  input[type="file"]::-webkit-file-upload-button{
+    background:var(--maroon);color:#fff;border:none;border-radius:6px;
+    padding:8px 14px;font-size:13px;font-weight:600;font-family:'Public Sans',sans-serif;
+    cursor:pointer;margin-right:12px;
+  }
+  input[type="file"]::file-selector-button:hover,
+  input[type="file"]::-webkit-file-upload-button:hover{opacity:.9;}
   .foto-actual{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
   .foto-actual img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);}
   .foto-actual span{color:var(--muted);font-size:12px;}
