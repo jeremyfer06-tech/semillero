@@ -8,8 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
-    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+    --bg:#FAFAF7; --panel:#FFFFFF; --line:#E4E2D8; --ink:#16241B; --muted:#6B7268;
+    --maroon:#D94E1F; --maroon-50:#FCEAE2; --grass:#1B7A43; --grass-50:#E9F3EC;
+    --sol:#F5B700; --sol-50:#FDF3D9;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
@@ -21,7 +22,13 @@
   .tag{color:var(--muted);font-size:13px;}
   .volver-panel{color:var(--maroon);font-size:13px;text-decoration:none;font-weight:600;margin-top:4px;display:inline-block;}
   .volver-panel:hover{text-decoration:underline;}
-  .hero{padding:44px 0 28px;}
+  .hero{padding:44px 0 28px;position:relative;overflow:hidden;}
+  .hero .diamond-bg{
+    position:absolute;width:340px;height:340px;top:-140px;right:-80px;
+    border:2px solid var(--grass-50);transform:rotate(45deg);border-radius:18px;
+    pointer-events:none;z-index:0;
+  }
+  .hero .wrap{position:relative;z-index:1;}
   .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:34px;line-height:1.15;margin:0 0 10px;max-width:24ch;}
   .hero p{color:var(--muted);font-size:15px;max-width:56ch;margin:0;}
   form{margin:0;}
@@ -47,6 +54,7 @@
   .badge{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--grass-50);color:var(--grass);}
   .badge.alt{background:var(--maroon-50);color:var(--maroon);}
   .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14.5px;border:1px dashed var(--line);border-radius:12px;grid-column:1/-1;}
+  .cat-diamond{width:10px;height:10px;background:var(--grass);border-radius:2px;transform:rotate(45deg);margin-bottom:12px;}
   footer{padding:24px 0 50px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);}
   @media(max-width:820px){.filters{grid-template-columns:repeat(2,1fr);} .grid{grid-template-columns:1fr;} .equipos-liga-grid{grid-template-columns:repeat(2,1fr) !important;}}
 </style>
@@ -66,6 +74,7 @@
 </header>
 
 <section class="hero">
+  <div class="diamond-bg"></div>
   <div class="wrap">
     <h1>Encuentra a cada jugador del béisbol menor venezolano</h1>
     <p>Filtra por liga, categoría, equipo, año de nacimiento o nombre para ver el perfil de desarrollo de cada pelotero.</p>
@@ -147,6 +156,7 @@
   <div class="grid">
     {% for c in categorias_browse %}
       <a href="{% url 'categoria_detalle' c.id %}" style="background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;text-decoration:none;color:var(--ink);">
+        <div class="cat-diamond"></div>
         <div style="font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin-bottom:10px;">{{ c.nombre }}</div>
         <div style="display:flex;gap:14px;">
           <div style="font-size:12.5px;color:var(--muted);"><b style="color:var(--maroon);font-family:'Fraunces',serif;font-size:15px;display:block;">{{ c.total_equipos }}</b>Equipo{{ c.total_equipos|pluralize }}</div>
