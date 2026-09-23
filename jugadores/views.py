@@ -407,7 +407,7 @@ def panel_jugador_form(request, jugador_id=None):
         instancia = get_object_or_404(Jugador, pk=jugador_id, equipo__club=perfil.club)
 
     if request.method == 'POST':
-        form = JugadorForm(request.POST, instance=instancia, club=perfil.club)
+        form = JugadorForm(request.POST, request.FILES, instance=instancia, club=perfil.club)
         if form.is_valid():
             form.save()
             messages.success(request, 'Jugador guardado correctamente.')

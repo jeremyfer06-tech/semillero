@@ -29,7 +29,7 @@ class EquipoForm(forms.ModelForm):
 class JugadorForm(forms.ModelForm):
     class Meta:
         model = Jugador
-        fields = ['nombre', 'fecha_nacimiento', 'equipo', 'posicion_campo']
+        fields = ['nombre', 'fecha_nacimiento', 'equipo', 'posicion_campo', 'foto']
         widgets = {
             'fecha_nacimiento': forms.DateInput(attrs={'type': 'date'}),
         }

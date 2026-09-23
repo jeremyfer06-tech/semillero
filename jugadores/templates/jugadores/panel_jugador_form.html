@@ -34,6 +34,9 @@
     font-weight:600;text-align:center;text-decoration:none;
   }
   .btn-secundario:hover{background:var(--maroon-50);}
+  .foto-actual{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+  .foto-actual img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);}
+  .foto-actual span{color:var(--muted);font-size:12px;}
 </style>
 </head>
 <body>
@@ -48,10 +51,16 @@
 <div class="wrap">
   <h1>{% if editando %}Editar jugador{% else %}Nuevo jugador{% endif %}</h1>
   <div class="card">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in form %}
         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field.name == 'foto' and jugador.foto %}
+          <div class="foto-actual">
+            <img src="{{ jugador.foto.url }}" alt="Foto actual de {{ jugador.nombre }}">
+            <span>Foto actual — elige un archivo abajo para reemplazarla.</span>
+          </div>
+        {% endif %}
         {{ field }}
         {% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
         {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
