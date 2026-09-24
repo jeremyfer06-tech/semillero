@@ -8,8 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
-    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+    --bg:#FAFAF7; --panel:#FFFFFF; --line:#E4E2D8; --ink:#16241B; --muted:#6B7268;
+    --maroon:#D94E1F; --maroon-50:#FCEAE2; --grass:#1B7A43; --grass-50:#E9F3EC;
+    --sol:#F5B700; --sol-50:#FDF3D9;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
@@ -41,7 +42,7 @@
 
 <header>
   <div class="wrap">
-    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'inicio' %}" class="brand">Semillero</a>
     <div class="nav-links">
       <a href="{% url 'buscador_jugadores' %}">Buscador</a>
       <a href="{% url 'categorias_lista' %}">Categorías</a>

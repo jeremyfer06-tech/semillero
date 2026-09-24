@@ -8,8 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
-    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+    --bg:#FAFAF7; --panel:#FFFFFF; --line:#E4E2D8; --ink:#16241B; --muted:#6B7268;
+    --maroon:#D94E1F; --maroon-50:#FCEAE2; --grass:#1B7A43; --grass-50:#E9F3EC;
+    --sol:#F5B700; --sol-50:#FDF3D9;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
@@ -25,30 +26,41 @@
   .nav-links .btn{background:var(--maroon);color:#fff;padding:9px 18px;border-radius:8px;}
   .nav-links .btn:hover{color:#fff;opacity:.9;}
 
-  .hero{padding:80px 0 56px;text-align:center;}
-  .hero .eyebrow{color:var(--maroon);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px;}
-  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:52px;line-height:1.1;margin:0 auto 20px;max-width:20ch;}
-  .hero p{color:var(--muted);font-size:17px;max-width:56ch;margin:0 auto 34px;}
-  .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(180deg,var(--grass) 0%,#123F26 100%);
+    padding:88px 0 100px;text-align:center;color:#fff;
+  }
+  .hero .diamond{
+    position:absolute;width:640px;height:640px;
+    border:2px solid rgba(255,255,255,.10);
+    transform:translate(-50%,-38%) rotate(45deg);
+    top:0;left:50%;border-radius:22px;pointer-events:none;
+  }
+  .hero .diamond.d2{width:420px;height:420px;border-color:rgba(255,255,255,.14);}
+  .hero .eyebrow{position:relative;color:var(--sol);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px;}
+  .hero h1{position:relative;font-family:'Fraunces',serif;font-weight:600;font-size:52px;line-height:1.1;margin:0 auto 20px;max-width:20ch;}
+  .hero p{position:relative;color:rgba(255,255,255,.82);font-size:17px;max-width:56ch;margin:0 auto 34px;}
+  .hero-ctas{position:relative;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
   .cta-primary{background:var(--maroon);color:#fff;padding:14px 26px;border-radius:9px;text-decoration:none;font-weight:600;font-size:15px;}
-  .cta-secondary{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:14px 26px;border-radius:9px;text-decoration:none;font-weight:600;font-size:15px;}
-  .cta-secondary:hover{border-color:var(--maroon);color:var(--maroon);}
+  .cta-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.35);padding:14px 26px;border-radius:9px;text-decoration:none;font-weight:600;font-size:15px;}
+  .cta-secondary:hover{background:rgba(255,255,255,.16);}
 
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:56px 0;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:-52px 0 56px;position:relative;box-shadow:0 12px 30px -14px rgba(18,63,38,.28);}
   .stat{background:var(--panel);padding:26px 20px;text-align:center;}
   .stat .n{font-family:'Fraunces',serif;font-weight:600;font-size:34px;color:var(--maroon);}
   .stat .l{color:var(--muted);font-size:12.5px;margin-top:4px;}
 
   .mission{padding:20px 0 64px;border-bottom:1px solid var(--line);}
-  .mission-inner{background:var(--grass-50);border-radius:16px;padding:44px;text-align:center;}
+  .mission-inner{background:var(--sol-50);border-radius:16px;padding:44px;text-align:center;}
   .mission-inner p{font-family:'Fraunces',serif;font-size:22px;font-weight:500;line-height:1.5;color:var(--ink);max-width:44ch;margin:0 auto;}
-  .mission-inner p em{font-style:normal;color:var(--grass);}
+  .mission-inner p em{font-style:normal;color:var(--maroon);}
 
   .pillars{padding:64px 0;border-bottom:1px solid var(--line);}
   .pillars h2{font-family:'Fraunces',serif;font-weight:600;font-size:28px;text-align:center;margin:0 0 44px;}
   .pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   .pillar{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:28px 24px;}
-  .pillar .num{font-family:'Fraunces',serif;font-weight:600;color:var(--maroon);font-size:14px;margin-bottom:14px;}
+  .pillar .diamond-mark{width:14px;height:14px;background:var(--grass);border-radius:3px;transform:rotate(45deg);margin-bottom:16px;}
   .pillar h3{font-size:17px;margin:0 0 10px;}
   .pillar p{color:var(--muted);font-size:14px;margin:0;}
 
@@ -65,7 +77,7 @@
 
 <nav>
   <div class="wrap">
-    <div class="brand">Semillero <em>/ beta</em></div>
+    <div class="brand">Semillero</div>
     <div class="nav-links">
       <a href="{% url 'categorias_lista' %}">Categorías</a>
       <a href="{% url 'panel_login' %}">Acceso administradores</a>
@@ -75,6 +87,8 @@
 </nav>
 
 <section class="hero">
+  <div class="diamond"></div>
+  <div class="diamond d2"></div>
   <div class="wrap">
     <div class="eyebrow">Béisbol menor venezolano</div>
     <h1>Que los niños sean niños, aunque sueñen en grande</h1>
@@ -108,17 +122,17 @@
     <h2>Cómo funciona</h2>
     <div class="pillar-grid">
       <div class="pillar">
-        <div class="num">01</div>
+        <div class="diamond-mark"></div>
         <h3>Encuentra a cada jugador</h3>
         <p>Un buscador por liga, categoría, equipo, nombre o año de nacimiento — para que cualquier familia o entrenador encuentre a un pelotero en segundos.</p>
       </div>
       <div class="pillar">
-        <div class="num">02</div>
+        <div class="diamond-mark"></div>
         <h3>Sigue su desarrollo, no su marcador</h3>
         <p>Cámaras en los estadios registran tomas de bateo, lanzamiento y fildeo, publicadas en el perfil de cada jugador para ver cómo progresa con el tiempo.</p>
       </div>
       <div class="pillar">
-        <div class="num">03</div>
+        <div class="diamond-mark"></div>
         <h3>Cada equipo, a cargo de lo suyo</h3>
         <p>Un administrador por club gestiona su propia plantilla — solo ve y edita a sus jugadores, nunca a los de otro equipo.</p>
       </div>
@@ -128,7 +142,7 @@
 
 <footer>
   <div class="wrap">
-    Semillero — Prototipo desarrollado como proyecto de tesis de grado.
+    Semillero — que los niños sean niños, aunque sueñen en grande.
   </div>
 </footer>
 

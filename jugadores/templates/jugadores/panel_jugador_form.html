@@ -8,8 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
-    --maroon:#8C2F39; --maroon-50:#F4E7E8;
+    --bg:#FAFAF7; --panel:#FFFFFF; --line:#E4E2D8; --ink:#16241B; --muted:#6B7268;
+    --maroon:#D94E1F; --maroon-50:#FCEAE2; --sol:#F5B700; --sol-50:#FDF3D9;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
@@ -28,13 +28,33 @@
   .errorlist{list-style:none;padding:0;margin:4px 0 0;color:var(--maroon);font-size:12.5px;}
   .help{color:var(--muted);font-size:11.5px;margin-top:4px;}
   button{margin-top:26px;width:100%;background:var(--maroon);color:#fff;border:none;border-radius:9px;padding:12px;font-size:14.5px;font-weight:600;cursor:pointer;}
+  .btn-secundario{
+    display:block;margin-top:14px;width:100%;background:none;color:var(--maroon);
+    border:1px solid var(--maroon);border-radius:9px;padding:11px;font-size:13.5px;
+    font-weight:600;text-align:center;text-decoration:none;
+  }
+  .btn-secundario:hover{background:var(--maroon-50);}
+  input[type="file"]{
+    padding:9px 10px;color:var(--muted);font-size:13.5px;
+  }
+  input[type="file"]::file-selector-button,
+  input[type="file"]::-webkit-file-upload-button{
+    background:var(--maroon);color:#fff;border:none;border-radius:6px;
+    padding:8px 14px;font-size:13px;font-weight:600;font-family:'Public Sans',sans-serif;
+    cursor:pointer;margin-right:12px;
+  }
+  input[type="file"]::file-selector-button:hover,
+  input[type="file"]::-webkit-file-upload-button:hover{opacity:.9;}
+  .foto-actual{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+  .foto-actual img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);}
+  .foto-actual span{color:var(--muted);font-size:12px;}
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'inicio' %}" class="brand">Semillero</a>
     <a href="{% url 'panel_dashboard' %}" class="back">&larr; Volver al panel de {{ club.nombre }}</a>
   </div>
 </header>
@@ -42,16 +62,25 @@
 <div class="wrap">
   <h1>{% if editando %}Editar jugador{% else %}Nuevo jugador{% endif %}</h1>
   <div class="card">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in form %}
         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field.name == 'foto' and jugador.foto %}
+          <div class="foto-actual">
+            <img src="{{ jugador.foto.url }}" alt="Foto actual de {{ jugador.nombre }}">
+            <span>Foto actual — elige un archivo abajo para reemplazarla.</span>
+          </div>
+        {% endif %}
         {{ field }}
         {% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
         {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
       {% endfor %}
       <button type="submit">Guardar</button>
     </form>
+    {% if editando %}
+      <a class="btn-secundario" href="{% url 'panel_jugador_consentimiento_pdf' jugador.id %}">Generar planilla de consentimiento (PDF)</a>
+    {% endif %}
   </div>
 </div>
 

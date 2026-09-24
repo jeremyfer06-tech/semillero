@@ -8,8 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
-    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+    --bg:#FAFAF7; --panel:#FFFFFF; --line:#E4E2D8; --ink:#16241B; --muted:#6B7268;
+    --maroon:#D94E1F; --maroon-50:#FCEAE2; --grass:#1B7A43; --grass-50:#E9F3EC;
+    --sol:#F5B700; --sol-50:#FDF3D9;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
@@ -41,7 +42,8 @@
   thead th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;padding:0 8px 8px;border-bottom:1px solid var(--line);}
   tbody td{padding:10px 8px;border-bottom:1px solid var(--line);}
   tbody tr:last-child td{border-bottom:none;}
-  tbody a{color:var(--ink);text-decoration:none;}
+  tbody a{color:var(--maroon);text-decoration:none;font-weight:600;}
+  tbody a:hover{text-decoration:underline;}
   tbody a:hover{color:var(--maroon);}
   .empty-note{color:var(--muted);font-size:13px;padding:8px 0;}
 
@@ -52,7 +54,7 @@
 
 <header>
   <div class="wrap">
-    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'inicio' %}" class="brand">Semillero</a>
     <div style="display:flex;gap:20px;align-items:center;">
       <a href="{% url 'buscador_jugadores' %}" class="logout">Ver jugadores</a>
       <a href="{% url 'panel_logout' %}" class="logout">Cerrar sesión</a>
@@ -111,7 +113,7 @@
 </section>
 
 <footer>
-  <div class="wrap">Panel de administrador de club — Semillero beta.</div>
+  <div class="wrap">Panel de administrador de club — Semillero.</div>
 </footer>
 
 </body>

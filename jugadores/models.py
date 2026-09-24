@@ -127,6 +127,7 @@ class Jugador(models.Model):
     fecha_nacimiento = models.DateField()
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name="jugadores")
     posicion_campo = models.CharField(max_length=10, choices=POSICION_CHOICES, blank=True)
+    foto = models.ImageField(upload_to="jugadores/fotos/%Y/", blank=True, null=True)
 
     class Meta:
         verbose_name = "Jugador"

@@ -22,10 +22,10 @@ from django.urls import path
 from jugadores.views import (
     buscador_jugadores, categoria_detalle, categorias_lista,
     debug_conexion, detalle_juego, equipo_detalle, ficha_jugador, inicio,
-    panel_dashboard, panel_equipo_form, panel_jugador_form, panel_login, panel_logout,
+    panel_dashboard, panel_equipo_form, panel_jugador_consentimiento_pdf, panel_jugador_form, panel_login, panel_logout,
     panel_liga_calendario, panel_liga_dashboard, panel_liga_equipos,
     panel_liga_partido_detalle, panel_liga_posicion_eliminar, panel_liga_stats_form,
-    panel_video_form, panel_videos,
+    panel_video_eliminar, panel_video_form, panel_videos,
 )
 
 urlpatterns = [
@@ -47,10 +47,12 @@ urlpatterns = [
     path('panel/equipo/<int:equipo_id>/editar/', panel_equipo_form, name='panel_equipo_editar'),
     path('panel/jugador/nuevo/', panel_jugador_form, name='panel_jugador_nuevo'),
     path('panel/jugador/<int:jugador_id>/editar/', panel_jugador_form, name='panel_jugador_editar'),
+    path('panel/jugador/<int:jugador_id>/consentimiento/', panel_jugador_consentimiento_pdf, name='panel_jugador_consentimiento_pdf'),
 
     # Panel del camarógrafo / encargado de video
     path('panel/videos/', panel_videos, name='panel_videos'),
     path('panel/videos/juego/<int:juego_id>/nuevo/', panel_video_form, name='panel_video_nuevo'),
+    path('panel/videos/<int:video_id>/eliminar/', panel_video_eliminar, name='panel_video_eliminar'),
 
     # Panel del administrador de liga
     path('panel/liga/', panel_liga_dashboard, name='panel_liga_dashboard'),
