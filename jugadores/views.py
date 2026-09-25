@@ -1,10 +1,22 @@
 import unicodedata
 
 from django.db.models import Count, Sum
+from django.http import HttpResponse as _HttpResponseRobots
 from django.shortcuts import get_object_or_404, render
 
 from .estadisticas import calcular_bateo, calcular_defensa, calcular_ops_plus, calcular_pitcheo
 from .models import Categoria, Club, Equipo, EstadisticaJuego, Jugador, Liga, Posicion
+
+
+def robots_txt(request):
+    lineas = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /panel/",
+        "Disallow: /admin/",
+        f"Sitemap: {request.scheme}://{request.get_host()}/sitemap.xml",
+    ]
+    return _HttpResponseRobots("\n".join(lineas), content_type="text/plain")
 
 
 def normalizar(texto):
