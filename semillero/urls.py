@@ -17,19 +17,23 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
+from jugadores.sitemaps import sitemaps
 from jugadores.views import (
     buscador_jugadores, categoria_detalle, categorias_lista,
     debug_conexion, detalle_juego, equipo_detalle, ficha_jugador, inicio,
     panel_dashboard, panel_equipo_form, panel_jugador_consentimiento_pdf, panel_jugador_form, panel_login, panel_logout,
     panel_liga_calendario, panel_liga_dashboard, panel_liga_equipos,
     panel_liga_partido_detalle, panel_liga_posicion_eliminar, panel_liga_stats_form,
-    panel_video_eliminar, panel_video_form, panel_videos,
+    panel_video_eliminar, panel_video_form, panel_videos, robots_txt,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', robots_txt, name='robots_txt'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('debug-conexion/', debug_conexion, name='debug_conexion'),
     path('', inicio, name='inicio'),
     path('buscador/', buscador_jugadores, name='buscador_jugadores'),
