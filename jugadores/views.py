@@ -660,6 +660,21 @@ def panel_liga_stats_form(request, partido_id, jugador_id):
 
 
 @login_required(login_url='panel_login')
+def panel_liga_partido_eliminar(request, partido_id):
+    perfil = _perfil_admin_liga(request.user)
+    if perfil is None:
+        messages.error(request, 'Tu usuario no tiene permiso de administrador de liga.')
+        return redirect('panel_login')
+
+    partido = get_object_or_404(Partido, pk=partido_id)
+    if request.method == 'POST':
+        partido.delete()
+        messages.success(request, 'Partido eliminado, junto con sus estadísticas.')
+        return redirect('panel_liga_calendario')
+    return redirect('panel_liga_partido_detalle', partido_id=partido.id)
+
+
+@login_required(login_url='panel_login')
 def panel_liga_posicion_eliminar(request, posicion_id):
     perfil = _perfil_admin_liga(request.user)
     if perfil is None:

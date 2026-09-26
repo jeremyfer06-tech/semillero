@@ -26,7 +26,7 @@ from jugadores.views import (
     debug_conexion, detalle_juego, equipo_detalle, ficha_jugador, inicio,
     panel_dashboard, panel_equipo_form, panel_jugador_consentimiento_pdf, panel_jugador_form, panel_login, panel_logout,
     panel_liga_calendario, panel_liga_dashboard, panel_liga_equipos,
-    panel_liga_partido_detalle, panel_liga_posicion_eliminar, panel_liga_stats_form,
+    panel_liga_partido_detalle, panel_liga_partido_eliminar, panel_liga_posicion_eliminar, panel_liga_stats_form,
     panel_video_eliminar, panel_video_form, panel_videos, robots_txt,
 )
 
@@ -62,6 +62,7 @@ urlpatterns = [
     path('panel/liga/', panel_liga_dashboard, name='panel_liga_dashboard'),
     path('panel/liga/calendario/', panel_liga_calendario, name='panel_liga_calendario'),
     path('panel/liga/partido/<int:partido_id>/', panel_liga_partido_detalle, name='panel_liga_partido_detalle'),
+    path('panel/liga/partido/<int:partido_id>/eliminar/', panel_liga_partido_eliminar, name='panel_liga_partido_eliminar'),
     path('panel/liga/partido/<int:partido_id>/jugador/<int:jugador_id>/', panel_liga_stats_form, name='panel_liga_stats_form'),
     path('panel/liga/equipos/', panel_liga_equipos, name='panel_liga_equipos'),
     path('panel/liga/equipos/<int:posicion_id>/eliminar/', panel_liga_posicion_eliminar, name='panel_liga_posicion_eliminar'),
