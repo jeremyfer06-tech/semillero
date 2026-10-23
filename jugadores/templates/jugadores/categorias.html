@@ -22,6 +22,12 @@
   .brand em{font-style:normal;color:var(--maroon);}
   .nav-links a{color:var(--muted);text-decoration:none;font-size:13.5px;margin-left:20px;display:inline-flex;align-items:center;}
   .nav-ico{width:15px;height:15px;margin-right:6px;flex-shrink:0;}
+  @media (display-mode: standalone){
+    .nav-label{display:none;}
+    .nav-ico{margin-right:0;width:22px;height:22px;}
+  }
+  .app .nav-label{display:none;}
+  .app .nav-ico{margin-right:0;width:22px;height:22px;}
   .nav-links a:hover{color:var(--maroon);}
 
   .hero{padding:44px 0 8px;}
@@ -49,6 +55,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" href="/static/jugadores/icons/apple-touch-icon.png">
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js');});}</script>
+<script>if(window.navigator.standalone===true){document.documentElement.classList.add('app');}</script>
 </head>
 <body>
 
@@ -62,8 +69,8 @@
         <circle cx="60" cy="78" r="6" fill="#1B7A43"/>
       </svg>Semillero</a>
     <div class="nav-links">
-      <a href="{% url 'buscador_jugadores' %}"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscador</a>
-      <a href="{% url 'categorias_lista' %}"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Categorías</a>
+      <a href="{% url 'buscador_jugadores' %}" aria-label="Buscador" title="Buscador"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="nav-label">Buscador</span></a>
+      <a href="{% url 'categorias_lista' %}" aria-label="Categorías" title="Categorías"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span class="nav-label">Categorías</span></a>
     </div>
   </div>
 </header>
