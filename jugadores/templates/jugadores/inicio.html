@@ -49,9 +49,9 @@
   .cta-secondary:hover{background:rgba(255,255,255,.16);}
 
   [hidden]{display:none !important;}
-  .install-box{position:relative;margin-top:22px;}
-  .install-btn{background:none;border:none;color:rgba(255,255,255,.92);font-family:inherit;font-size:14px;font-weight:600;text-decoration:underline;cursor:pointer;padding:6px 10px;}
-  .hero .install-hint{color:rgba(255,255,255,.8);font-size:13px;max-width:42ch;margin:0 auto;}
+  .install-box{margin-top:12px;}
+  .install-btn{background:none;border:none;color:var(--grass);font-family:inherit;font-size:13px;font-weight:600;text-decoration:underline;cursor:pointer;padding:6px 10px;}
+  .install-hint{color:var(--muted);font-size:12.5px;max-width:42ch;margin:0 auto;}
 
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:-52px 0 56px;position:relative;box-shadow:0 12px 30px -14px rgba(18,63,38,.28);}
   .stat{background:var(--panel);padding:26px 20px;text-align:center;}
@@ -125,10 +125,6 @@
       <a class="cta-primary" href="{% url 'buscador_jugadores' %}">Buscar jugadores</a>
       <a class="cta-secondary" href="{% url 'panel_login' %}">Soy administrador de equipo</a>
     </div>
-    <div class="install-box" id="install-box" hidden>
-      <button type="button" class="install-btn" id="install-btn" hidden>Instalar app en mi teléfono</button>
-      <p class="install-hint" id="ios-hint" hidden>Para instalar en iPhone: toca <strong>Compartir</strong> y luego <strong>Añadir a pantalla de inicio</strong>.</p>
-    </div>
   </div>
 </section>
 
@@ -175,6 +171,10 @@
 <footer>
   <div class="wrap">
     Semillero — que los niños sean niños, aunque sueñen en grande.
+    <div class="install-box" id="install-box" hidden>
+      <button type="button" class="install-btn" id="install-btn" hidden>Instalar app</button>
+      <p class="install-hint" id="ios-hint" hidden>Para instalar en iPhone: toca <strong>Compartir</strong> y luego <strong>Añadir a pantalla de inicio</strong>.</p>
+    </div>
   </div>
 </footer>
 
