@@ -17,19 +17,27 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
+from jugadores.pwa import pwa_manifest, pwa_offline, pwa_service_worker
+from jugadores.sitemaps import sitemaps
 from jugadores.views import (
     buscador_jugadores, categoria_detalle, categorias_lista,
     debug_conexion, detalle_juego, equipo_detalle, ficha_jugador, inicio,
-    panel_dashboard, panel_equipo_form, panel_jugador_form, panel_login, panel_logout,
+    panel_dashboard, panel_equipo_form, panel_jugador_consentimiento_pdf, panel_jugador_form, panel_login, panel_logout,
     panel_liga_calendario, panel_liga_dashboard, panel_liga_equipos,
-    panel_liga_partido_detalle, panel_liga_posicion_eliminar, panel_liga_stats_form,
-    panel_video_form, panel_videos,
+    panel_liga_partido_detalle, panel_liga_partido_eliminar, panel_liga_posicion_eliminar, panel_liga_stats_form,
+    panel_video_eliminar, panel_video_form, panel_videos, robots_txt,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', robots_txt, name='robots_txt'),
+    path('manifest.webmanifest', pwa_manifest, name='pwa_manifest'),
+    path('sw.js', pwa_service_worker, name='pwa_service_worker'),
+    path('offline/', pwa_offline, name='pwa_offline'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('debug-conexion/', debug_conexion, name='debug_conexion'),
     path('', inicio, name='inicio'),
     path('buscador/', buscador_jugadores, name='buscador_jugadores'),
@@ -47,15 +55,18 @@ urlpatterns = [
     path('panel/equipo/<int:equipo_id>/editar/', panel_equipo_form, name='panel_equipo_editar'),
     path('panel/jugador/nuevo/', panel_jugador_form, name='panel_jugador_nuevo'),
     path('panel/jugador/<int:jugador_id>/editar/', panel_jugador_form, name='panel_jugador_editar'),
+    path('panel/jugador/<int:jugador_id>/consentimiento/', panel_jugador_consentimiento_pdf, name='panel_jugador_consentimiento_pdf'),
 
     # Panel del camarógrafo / encargado de video
     path('panel/videos/', panel_videos, name='panel_videos'),
     path('panel/videos/juego/<int:juego_id>/nuevo/', panel_video_form, name='panel_video_nuevo'),
+    path('panel/videos/<int:video_id>/eliminar/', panel_video_eliminar, name='panel_video_eliminar'),
 
     # Panel del administrador de liga
     path('panel/liga/', panel_liga_dashboard, name='panel_liga_dashboard'),
     path('panel/liga/calendario/', panel_liga_calendario, name='panel_liga_calendario'),
     path('panel/liga/partido/<int:partido_id>/', panel_liga_partido_detalle, name='panel_liga_partido_detalle'),
+    path('panel/liga/partido/<int:partido_id>/eliminar/', panel_liga_partido_eliminar, name='panel_liga_partido_eliminar'),
     path('panel/liga/partido/<int:partido_id>/jugador/<int:jugador_id>/', panel_liga_stats_form, name='panel_liga_stats_form'),
     path('panel/liga/equipos/', panel_liga_equipos, name='panel_liga_equipos'),
     path('panel/liga/equipos/<int:posicion_id>/eliminar/', panel_liga_posicion_eliminar, name='panel_liga_posicion_eliminar'),

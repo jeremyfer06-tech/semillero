@@ -8,15 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDEBE2; --panel:#FFFFFF; --line:#DAD6C9; --ink:#23201B; --muted:#7A776C;
-    --maroon:#8C2F39; --maroon-50:#F4E7E8; --grass:#48633B; --grass-50:#EAEEE4;
+    --bg:#FAFAF7; --panel:#FFFFFF; --line:#E4E2D8; --ink:#16241B; --muted:#6B7268;
+    --maroon:#D94E1F; --maroon-50:#FCEAE2; --grass:#1B7A43; --grass-50:#E9F3EC;
+    --sol:#F5B700; --sol-50:#FDF3D9;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans',sans-serif;line-height:1.5;}
   .wrap{max-width:900px;margin:0 auto;padding:0 28px;}
   header{padding:24px 0;border-bottom:1px solid var(--line);}
   header .wrap{display:flex;justify-content:space-between;align-items:center;}
-  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px;}
   .brand em{font-style:normal;color:var(--maroon);}
   .logout{color:var(--muted);font-size:13px;text-decoration:none;}
   .logout:hover{color:var(--maroon);}
@@ -41,18 +42,34 @@
   thead th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;padding:0 8px 8px;border-bottom:1px solid var(--line);}
   tbody td{padding:10px 8px;border-bottom:1px solid var(--line);}
   tbody tr:last-child td{border-bottom:none;}
-  tbody a{color:var(--ink);text-decoration:none;}
+  tbody a{color:var(--maroon);text-decoration:none;font-weight:600;}
+  tbody a:hover{text-decoration:underline;}
   tbody a:hover{color:var(--maroon);}
   .empty-note{color:var(--muted);font-size:13px;padding:8px 0;}
 
   footer{padding:32px 0 50px;color:var(--muted);font-size:12px;}
 </style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><rect x='20' y='20' width='80' height='80' rx='10' fill='none' stroke='%231B7A43' stroke-width='9' transform='rotate(45 60 60)'/><path d='M60 78 L60 54' stroke='%231B7A43' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M60 62 C50 58 46 48 50 40 C58 44 62 54 60 62 Z' fill='%23F5B700'/><path d='M60 58 C70 52 74 42 70 34 C62 40 57 50 60 58 Z' fill='%23D94E1F'/><circle cx='60' cy='78' r='6' fill='%231B7A43'/></svg>">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1B7A43">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Semillero">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="/static/jugadores/icons/apple-touch-icon.png">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js');});}</script>
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <a href="{% url 'inicio' %}" class="brand">Semillero <em>/ beta</em></a>
+    <a href="{% url 'inicio' %}" class="brand"><svg width="22" height="22" viewBox="0 0 120 120" style="flex-shrink:0;">
+        <rect x="20" y="20" width="80" height="80" rx="10" fill="none" stroke="#1B7A43" stroke-width="9" transform="rotate(45 60 60)"/>
+        <path d="M60 78 L60 54" stroke="#1B7A43" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M60 62 C50 58 46 48 50 40 C58 44 62 54 60 62 Z" fill="#F5B700"/>
+        <path d="M60 58 C70 52 74 42 70 34 C62 40 57 50 60 58 Z" fill="#D94E1F"/>
+        <circle cx="60" cy="78" r="6" fill="#1B7A43"/>
+      </svg>Semillero</a>
     <div style="display:flex;gap:20px;align-items:center;">
       <a href="{% url 'buscador_jugadores' %}" class="logout">Ver jugadores</a>
       <a href="{% url 'panel_logout' %}" class="logout">Cerrar sesión</a>
@@ -111,7 +128,7 @@
 </section>
 
 <footer>
-  <div class="wrap">Panel de administrador de club — Semillero beta.</div>
+  <div class="wrap">Panel de administrador de club — Semillero.</div>
 </footer>
 
 </body>

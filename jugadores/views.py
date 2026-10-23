@@ -1,10 +1,22 @@
 import unicodedata
 
 from django.db.models import Count, Sum
+from django.http import HttpResponse as _HttpResponseRobots
 from django.shortcuts import get_object_or_404, render
 
 from .estadisticas import calcular_bateo, calcular_defensa, calcular_ops_plus, calcular_pitcheo
 from .models import Categoria, Club, Equipo, EstadisticaJuego, Jugador, Liga, Posicion
+
+
+def robots_txt(request):
+    lineas = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /panel/",
+        "Disallow: /admin/",
+        f"Sitemap: {request.scheme}://{request.get_host()}/sitemap.xml",
+    ]
+    return _HttpResponseRobots("\n".join(lineas), content_type="text/plain")
 
 
 def normalizar(texto):
@@ -121,6 +133,16 @@ def buscador_jugadores(request):
             total_jugadores=Count('campeonatos__equipos__jugadores', distinct=True),
         ).order_by('orden')
 
+    panel_url_name = None
+    if request.user.is_authenticated:
+        perfil = PerfilAdministrador.objects.filter(user=request.user).first()
+        if perfil:
+            panel_url_name = {
+                'admin_club': 'panel_dashboard',
+                'admin_liga': 'panel_liga_dashboard',
+                'camarografo': 'panel_videos',
+            }.get(perfil.rol)
+
     context = {
         'hay_busqueda': hay_busqueda,
         'jugadores': jugadores,
@@ -133,6 +155,7 @@ def buscador_jugadores(request):
             'q': q, 'liga': liga_id, 'categoria': categoria_id,
             'club': club_id, 'anio_min': anio_min, 'anio_max': anio_max,
         },
+        'panel_url_name': panel_url_name,
     }
     return render(request, 'jugadores/buscador.html', context)
 
@@ -259,7 +282,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 from .forms import EquipoForm, JugadorForm, VideoForm
-from .models import PerfilAdministrador
+from .models import PerfilAdministrador, Video
 
 
 def _perfil_por_rol(user, roles_permitidos=None):
@@ -396,7 +419,7 @@ def panel_jugador_form(request, jugador_id=None):
         instancia = get_object_or_404(Jugador, pk=jugador_id, equipo__club=perfil.club)
 
     if request.method == 'POST':
-        form = JugadorForm(request.POST, instance=instancia, club=perfil.club)
+        form = JugadorForm(request.POST, request.FILES, instance=instancia, club=perfil.club)
         if form.is_valid():
             form.save()
             messages.success(request, 'Jugador guardado correctamente.')
@@ -406,7 +429,28 @@ def panel_jugador_form(request, jugador_id=None):
 
     return render(request, 'jugadores/panel_jugador_form.html', {
         'form': form, 'club': perfil.club, 'editando': instancia is not None,
+        'jugador': instancia,
     })
+
+
+@login_required(login_url='panel_login')
+def panel_jugador_consentimiento_pdf(request, jugador_id):
+    perfil = _perfil_club_admin(request.user)
+    if perfil is None:
+        messages.error(request, 'Tu usuario no tiene un perfil de administrador de club asignado.')
+        return redirect('panel_login')
+
+    jugador = get_object_or_404(
+        Jugador.objects.select_related('equipo', 'equipo__club', 'equipo__campeonato', 'equipo__campeonato__categoria', 'equipo__campeonato__liga'),
+        pk=jugador_id, equipo__club=perfil.club,
+    )
+
+    from .consentimiento_pdf import generar_pdf_consentimiento
+    buffer = generar_pdf_consentimiento(jugador)
+    nombre_archivo = f"consentimiento_{jugador.nombre.replace(' ', '_').lower()}.pdf"
+    response = _HttpResponse(buffer.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+    return response
 
 
 @login_required(login_url='panel_login')
@@ -447,13 +491,39 @@ def panel_video_form(request, juego_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Video cargado correctamente.')
-            return redirect('panel_videos')
+            return redirect('panel_video_nuevo', juego_id=juego.id)
     else:
         form = VideoForm(juego=juego)
 
     return render(request, 'jugadores/panel_video_form.html', {
         'form': form, 'club': perfil.club, 'juego': juego,
+        'videos_cargados': juego.videos.all().order_by('-id'),
     })
+
+
+@login_required(login_url='panel_login')
+def panel_video_eliminar(request, video_id):
+    perfil = _perfil_camarografo(request.user)
+    if perfil is None:
+        messages.error(request, 'Tu usuario no tiene permiso de camarógrafo.')
+        return redirect('panel_login')
+
+    video_qs = Video.objects.select_related('jugador__equipo__club', 'juego')
+    if perfil.club is not None:
+        video_qs = video_qs.filter(jugador__equipo__club=perfil.club)
+    video = get_object_or_404(video_qs, pk=video_id)
+    juego_id = video.juego_id
+
+    if request.method == 'POST':
+        # Borra también el archivo físico del storage, no solo el registro.
+        if video.archivo:
+            video.archivo.delete(save=False)
+        video.delete()
+        messages.success(request, 'Video eliminado.')
+
+    if juego_id:
+        return redirect('panel_video_nuevo', juego_id=juego_id)
+    return redirect('panel_videos')
 
 
 # ============================================================
@@ -587,6 +657,21 @@ def panel_liga_stats_form(request, partido_id, jugador_id):
     return render(request, 'jugadores/panel_liga_stats_form.html', {
         'form': form, 'partido': partido, 'jugador': jugador,
     })
+
+
+@login_required(login_url='panel_login')
+def panel_liga_partido_eliminar(request, partido_id):
+    perfil = _perfil_admin_liga(request.user)
+    if perfil is None:
+        messages.error(request, 'Tu usuario no tiene permiso de administrador de liga.')
+        return redirect('panel_login')
+
+    partido = get_object_or_404(Partido, pk=partido_id)
+    if request.method == 'POST':
+        partido.delete()
+        messages.success(request, 'Partido eliminado, junto con sus estadísticas.')
+        return redirect('panel_liga_calendario')
+    return redirect('panel_liga_partido_detalle', partido_id=partido.id)
 
 
 @login_required(login_url='panel_login')
