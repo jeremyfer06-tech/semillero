@@ -23,7 +23,8 @@
   .brand{font-family:'Fraunces',serif;font-weight:600;font-size:22px;display:flex;align-items:center;gap:9px;}
   .brand em{font-style:normal;color:var(--maroon);}
   .nav-links{display:flex;gap:24px;align-items:center;}
-  .nav-links a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;}
+  .nav-links a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;display:inline-flex;align-items:center;}
+  .nav-ico{width:16px;height:16px;margin-right:6px;flex-shrink:0;}
   .nav-links a:hover{color:var(--maroon);}
   .nav-links .btn{background:var(--maroon);color:#fff;padding:9px 18px;border-radius:8px;}
   .nav-links .btn:hover{color:#fff;opacity:.9;}
@@ -107,8 +108,8 @@
         <circle cx="60" cy="78" r="6" fill="#1B7A43"/>
       </svg>Semillero</div>
     <div class="nav-links">
-      <a href="{% url 'categorias_lista' %}">Categorías</a>
-      <a href="{% url 'panel_login' %}">Acceso administradores</a>
+      <a href="{% url 'categorias_lista' %}"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Categorías</a>
+      <a href="{% url 'panel_login' %}"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Acceso administradores</a>
       <a class="btn" href="{% url 'buscador_jugadores' %}">Ver jugadores</a>
     </div>
   </div>

@@ -20,7 +20,8 @@
   header .wrap{display:flex;justify-content:space-between;align-items:center;}
   .brand{font-family:'Fraunces',serif;font-weight:600;font-size:20px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px;}
   .brand em{font-style:normal;color:var(--maroon);}
-  .nav-links a{color:var(--muted);text-decoration:none;font-size:13.5px;margin-left:20px;}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:13.5px;margin-left:20px;display:inline-flex;align-items:center;}
+  .nav-ico{width:15px;height:15px;margin-right:6px;flex-shrink:0;}
   .nav-links a:hover{color:var(--maroon);}
 
   .hero{padding:44px 0 8px;}
@@ -61,8 +62,8 @@
         <circle cx="60" cy="78" r="6" fill="#1B7A43"/>
       </svg>Semillero</a>
     <div class="nav-links">
-      <a href="{% url 'buscador_jugadores' %}">Buscador</a>
-      <a href="{% url 'categorias_lista' %}">Categorías</a>
+      <a href="{% url 'buscador_jugadores' %}"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscador</a>
+      <a href="{% url 'categorias_lista' %}"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Categorías</a>
     </div>
   </div>
 </header>
